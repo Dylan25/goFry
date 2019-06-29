@@ -8,7 +8,10 @@ class App extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectedFile: null
+            selectedFile: null,
+            processingImage: false,
+            fryedImage: null,
+            selectedNewFile: false,
         }
 
     }
@@ -16,20 +19,24 @@ class App extends React.Component {
     fileSelectedHandler = event => {
         this.setState({
             selectedFile: event.target.files[0],
-            fryedImage: {},
+            fryedImage: event.target.files[0],
+            selectedNewFile: true,
+
         })
     }
 
     fileUploadHandler = () => {
-        console.log("clicked upload")
         const fd = new FormData();
         fd.append('image', this.state.selectedFile, this.state.selectedFile.name);
+        this.setState({
+            processingImage: true
+        })
         axios.post('/api/', fd)
             .then(res => {
-                console.log("hi");
-                console.log(res);
                 this.setState({
-                    fryedImage: res.data.fryedImage
+                    fryedImage: res.data.fryedImage,
+                    processingImage: false,
+                    selectedNewFile: false,
                 })
             })
             .catch(error => {
@@ -54,17 +61,50 @@ class App extends React.Component {
         )
     }
 
+    genImageJSX = () => {
+        if(this.state.selectedNewFile) {
+            return (<img src={URL.createObjectURL(this.state.selectedFile)}/>)
+        } else {
+            return (<img src={`data:image/jpeg;base64,${this.state.fryedImage}`}/>)
+        }
+    }
+
     render() {
-        return (
-            <div>
-                <BlockCard
-                        payload={<img src={`data:image/jpeg;base64,${this.state.fryedImage}`}/>}
-                        actions={
-                            this.createButtons()
-                        }
-                />
-            </div>
-        );
+        
+        if(this.state.processingImage) {
+            return (
+                <div>
+                    <BlockCard
+                            payload={"Loading..."}
+                            actions={
+                                this.createButtons()
+                            }
+                    />
+                </div>
+            );
+        } else if (this.state.selectedFile != null) {
+            return (
+                <div>
+                    <BlockCard
+                            payload={this.genImageJSX()}
+                            actions={
+                                this.createButtons()
+                            }
+                    />
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <BlockCard
+                            payload={" "}
+                            actions={
+                                this.createButtons()
+                            }
+                    />
+                </div>
+            );
+        }
     }
 }
 
