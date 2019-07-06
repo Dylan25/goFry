@@ -21,78 +21,6 @@ func init() {
 	image.RegisterFormat("jpeg", "jpeg", jpeg.Decode, jpeg.DecodeConfig)
 }
 
-// func Fry() {
-// 	rand.Seed(time.Now().UTC().UnixNano())
-// 	ImageFile, timesFry := inputParseAndOpen()
-// 	defer ImageFile.Close()
-
-// 	if strings.HasSuffix(os.Args[1], ".gif") {
-// 		_, newGif := SplitAnimatedGIF(ImageFile, timesFry)
-// 		outputFile, err := os.Create("fryd" + os.Args[1])
-// 		if err != nil {
-// 			fmt.Fprintf(os.Stderr, "perlin output error: %s\n", err)
-// 		}
-// 		gif.EncodeAll(outputFile, newGif)
-// 		outputFile.Close()
-// 	} else {
-// 		newImg, imageType := openDecodeFilterStatic(ImageFile, timesFry)
-
-// 		outputFile, err := os.Create("fryd" + os.Args[1])
-// 		if err != nil {
-// 			fmt.Fprintf(os.Stderr, "perlin output error: %s\n", err)
-// 		}
-
-// 		if imageType == "png" {
-// 			png.Encode(outputFile, newImg)
-// 		} else if imageType == "jpeg" {
-// 			jpeg.Encode(outputFile, newImg, nil)
-// 		} else {
-// 			fmt.Println("ERROR: unrecognized file format")
-// 		}
-// 		outputFile.Close()
-// 	}
-
-// 	fmt.Printf("output written to %s\n", "fryd"+os.Args[1])
-// }
-
-// func inputParseAndOpen() (*os.File, int) {
-// 	if len(os.Args) <= 1 {
-// 		fmt.Fprint(os.Stderr, "ERROR: please provide a filename\n")
-// 		fmt.Println("USAGE: 'imagefry.exe image.jpg/png #times_fryd'")
-// 		os.Exit(1)
-// 	}
-// 	if strings.HasSuffix(os.Args[1], ".png") || strings.HasSuffix(os.Args[1], ".jpg") || strings.HasSuffix(os.Args[1], ".gif") {
-// 		imageFile, err := os.Open(os.Args[1])
-// 		if err != nil {
-// 			fmt.Fprintf(os.Stderr, "could not open file, %v\n", err)
-// 			os.Exit(1)
-// 		}
-
-// 		if len(os.Args) == 3 {
-// 			numfry := os.Args[2]
-// 			intnumfry, err := strconv.Atoi(numfry)
-// 			if err != nil {
-// 				fmt.Fprintf(os.Stderr, "ERROR: please enter a number of times to fry, %s\n", err)
-// 				os.Exit(1)
-// 			}
-// 			return imageFile, intnumfry
-// 		} else if len(os.Args) > 3 {
-// 			fmt.Fprint(os.Stderr, "ERROR: too many arguments")
-// 			os.Exit(1)
-// 		} else {
-// 			return imageFile, 1
-// 		}
-
-// 	} else {
-// 		fmt.Fprint(os.Stderr, "ERROR: please provide a filename\n")
-// 		fmt.Println("USAGE: 'imagefry.exe image.jpg/png #times_fryd'")
-// 		os.Exit(1)
-// 	}
-// 	fmt.Fprintf(os.Stderr, "Argument parse error, try again")
-// 	os.Exit(1)
-// 	return nil, 0
-// }
-
 func randFilter(imageData image.Image, imgCfg image.Config, timesFry int) image.Image {
 	// copy old image to a new template
 
@@ -177,17 +105,7 @@ func openDecodeFilterStatic(ImageFile multipart.File, timesFry int) (image.Image
 	return newImg, imageType
 }
 
-func Fry(ImageFile *multipart.File) (*image.Image, string) {
-	//var outputFile *multipart.File
-	newImg, imageType := openDecodeFilterStatic(*ImageFile, 15)
-
-	// if imageType == "png" {
-	//	png.Encode(outputFile, newImg)
-	// } else if imageType == "jpeg" {
-	// 	jpeg.Encode(outputFile, newImg, nil)
-	// } else {
-	// 	fmt.Println("ERROR: unrecognized file format")
-	// }
-
+func Fry(ImageFile *multipart.File, timesFry int) (*image.Image, string) {
+	newImg, imageType := openDecodeFilterStatic(*ImageFile, timesFry)
 	return &newImg, imageType
 }

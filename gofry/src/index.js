@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import BlockCard from './BlockCard.js'
 import Grid from '@material-ui/core/Grid';
+import FrySlider from './Slider.js';
 
 class App extends React.Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class App extends React.Component {
             processingImage: false,
             fryedImage: null,
             selectedNewFile: false,
+            timesFry: 11,
         }
 
     }
@@ -28,9 +30,11 @@ class App extends React.Component {
     fileUploadHandler = () => {
         const fd = new FormData();
         fd.append('image', this.state.selectedFile, this.state.selectedFile.name);
+        fd.append('timesFry', this.state.timesFry);
         this.setState({
             processingImage: true
         })
+
         axios.post('/api/', fd)
             .then(res => {
                 this.setState({
@@ -40,11 +44,12 @@ class App extends React.Component {
                 })
             })
             .catch(error => {
-                console.log("post error", error);
+                console.log("post error in fileUploadHandler", error);
             })
     }
 
     createButtons = () => {
+        var val;
         return (
             <Grid
                 container
@@ -56,6 +61,11 @@ class App extends React.Component {
                 </Grid>
                 <Grid item xs={1}>
                     <button onClick={this.fileUploadHandler}>Upload</button>
+                </Grid>
+                <Grid item xs={12}>
+                    <FrySlider
+                        handleChange={ (e, val) => this.setState({timesFry: val})}
+                    />
                 </Grid>
             </Grid>
         )

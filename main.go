@@ -6,6 +6,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
@@ -38,6 +39,9 @@ func main() {
 
 func FryImage(c *gin.Context) {
 	fmt.Println("frying")
+	//fmt.Printf("request is %v", c.JSON)
+	timesFry, _ := strconv.Atoi(c.Request.FormValue("timesFry"))
+	fmt.Printf("timesFry is %v", timesFry)
 	//fmt.Printf("got %v", c.Request)
 	file, header, err := c.Request.FormFile("image")
 	//filetofry, err := header.Open()
@@ -46,7 +50,7 @@ func FryImage(c *gin.Context) {
 	}
 	filename := header.Filename
 	fmt.Println(filename)
-	frydimage, imageType := fry.Fry(&file)
+	frydimage, imageType := fry.Fry(&file, timesFry)
 	//image_byte_buffer_to_send := make([]byte, header.Size)
 	image_byte_buffer_to_send := new(bytes.Buffer)
 
